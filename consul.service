@@ -1,3 +1,4 @@
+### SYSTEMD ###
 [Unit]
 Description=Consul start up script
 
@@ -7,3 +8,13 @@ Restart=always
 
 [Install]
 WantedBy=multi-user.target
+
+
+
+
+
+### Supervisor ###
+[program:consul]
+command=/bin/bash /home/ec2-user/consul_setup
+autorestart = true
+user=ec2-user
