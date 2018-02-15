@@ -1,0 +1,9 @@
+[Unit]
+Description=Consul start up script
+
+[Service]
+ExecStart=/bin/bash /home/ubuntu/consul_setup
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
