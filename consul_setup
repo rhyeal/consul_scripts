@@ -1,0 +1,21 @@
+#!/bin/bash
+
+TAG_SERVICE="Service"
+TAG_ENV="Environment"
+
+PORT=4000
+USER=ubuntu
+
+INSTANCE_ID="`wget -qO- http://instance-data/latest/meta-data/instance-id`"
+REGION="`wget -qO- http://instance-data/latest/meta-data/placement/availability-zone | sed -e 's:\([0-9][0-9]*\)[a-z]*\$:\\1:'`"
+TAG_SERVICE_VALUE="`aws ec2 describe-tags --filters "Name=resource-id,Values=$INSTANCE_ID" "Name=key,Values=$TAG_SERVICE" --region $REGION --output=text | cut -f5 | awk '{print tolower($0)}'`"
+TAG_ENV_VALUE="`aws ec2 describe-tags --filters "Name=resource-id,Values=$INSTANCE_ID" "Name=key,Values=$TAG_ENV" --region $REGION --output=text | cut -f5 | awk '{print tolower($0)}'`"
+
+#printf $TAG_SERVICE_VALUE
+#printf $TAG_ENV_VALUE
+
+mkdir -p /home/$USER/consul
+
+echo "{\"service\": {\"name\": \"$TAG_SERVICE_VALUE-$TAG_ENV_VALUE\", \"tags\": [\"$TAG_SERVICE_VALUE\", \"$TAG_ENV_VALUE\"], \"port\": $PORT}}" | tee ~/consul/config.json
+
+consul agent -retry-join "provider=aws tag_key=Service tag_value=Consul" -data-dir=/tmp/consul -datacenter "$REGION" -node "$TAG_SERVICE_VALUE-$TAG_ENV_VALUE" -config-dir=/home/$USER/consul/config.json
