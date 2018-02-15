@@ -18,6 +18,6 @@ TAG_ENV_VALUE="`aws ec2 describe-tags --filters "Name=resource-id,Values=$INSTAN
 
 mkdir -p ~/consul
 
-echo "{\"service\": {\"name\": \"$TAG_SERVICE_VALUE-$TAG_ENV_VALUE\", \"tags\": [\"$TAG_SERVICE_VALUE\", \"$TAG_ENV_VALUE\"], \"port\": $PORT}}" | tee ~/consul/config.json
+echo "{\"service\": {\"name\": \"$TAG_SERVICE_VALUE-$TAG_ENV_VALUE\", \"tags\": [\"$TAG_SERVICE_VALUE\", \"$TAG_ENV_VALUE\"], \"port\": $PORT}}" | tee /home/$USER/consul/config.json
 
 /usr/local/bin/consul agent -retry-join "provider=aws tag_key=Service tag_value=Consul" -data-dir=/tmp/consul -datacenter "$REGION" -node "$TAG_SERVICE_VALUE-$TAG_ENV_VALUE" -config-dir=/home/$USER/consul/config.json
