@@ -20,4 +20,4 @@ mkdir -p ~/consul
 
 echo "{\"service\": {\"name\": \"$TAG_SERVICE_VALUE-$TAG_ENV_VALUE\", \"tags\": [\"$TAG_SERVICE_VALUE\", \"$TAG_ENV_VALUE\"], \"port\": $PORT}}" | tee /home/$USER/consul/config.json
 
-/usr/local/bin/consul agent -retry-join "provider=aws tag_key=Service tag_value=Consul" -data-dir=/tmp/consul -datacenter "$REGION" -node "$TAG_SERVICE_VALUE-$TAG_ENV_VALUE" -config-dir=/home/$USER/consul/config.json
+/usr/local/bin/consul agent -retry-join "provider=aws tag_key=Service tag_value=Consul" -data-dir=/tmp/consul -datacenter "$REGION" -node "$TAG_SERVICE_VALUE-$TAG_ENV_VALUE-$INSTANCE_ID" -config-dir=/home/$USER/consul/config.json
